@@ -1,17 +1,29 @@
-Achieved **distinction** level for modelling and implementing safe concurrent system with FSP and Java simulation:
+# Concurrent System Modeling and Simulation
 
--Added FSP models for labelled transition system (LTS) behaviour of NS and WE processes and their parallel composition (Q1)
+This project models and simulates a concurrent system involving two competing processes using formal modeling with FSP (Finite State Processes) and Java multithreading. The work includes verifying safety and progress properties, implementing shared resource access logic, and visualizing the protocol execution.
 
--Calculated probability and timing analysis for DRINKS machine (Q2)
+## 🚀 Overview
 
--Modeled gang court access problem using FSP with safety properties and structural diagram (Q3)
+- Defined concurrent process models using **FSP**
+- Verified **safety** and **progress** properties using the **LTSA** tool
+- Implemented the specified protocol in **Java** using threads, monitors, and a text-based UI
+- Mapped each part of the implementation directly to the formal specification
+- Achieved a **Distinction** grade for this individual project (UK 70+ standard)
 
--Extended model with handkerchief-based court-sharing protocol and verified safety (Q4)
+## 🛠 Technologies
 
--Introduced and verified progress properties for greedy and non-greedy gang behavior (Q5)
+- Java (Monitors, Threads, UI)
+- FSP (Finite State Processes)
+- LTSA (Labelled Transition System Analyser)
 
--Modeled and verified Officer Krupke's protocol using FSP with updated safety and progress checks (Q6)
 
--Implemented Java thread and monitor-based simulation of Officer Krupke’s solution with UI (Q7)
+> ❗ The original task document is **not included** to respect university policies.
 
--Demonstrated correctness of LTS behavior using LTSA tools with provided FSP code (Q8)
+## 📋 Notes
+
+- This project was completed individually as part of an advanced module on concurrency and formal methods.
+- The code is shared for educational and reference purposes only.
+- Please **do not reuse or submit** this work as your own in academic settings.
+
+
+
