@@ -1,0 +1,34 @@
+NS = NS0,
+	NS0 = (n -> NS1),           
+	NS1 = (ne -> NS2),
+	NS2 = (se -> NS3),         
+	NS3 = (s -> NS4),
+	NS4 = (ne -> NS5),         
+	NS5 = (nw -> NS6),
+	NS6 = (nw -> NS7),         
+	NS7 = (sw -> NS3).
+
+WE = WE0,
+	WE0 = (ne -> WE1),         
+	WE1 = (se -> WE2),
+	WE2 = (e -> WE3),          
+	WE3 = (e -> WE4),
+	WE4 = (ne -> WE5),         
+	WE5 = (nw -> WE6),
+	WE6 = (nw -> WE7),         
+	WE7 = (sw -> WE2).
+
+||S = (NS||WE).
+
+
+const N = 12
+range T = 0..N
+
+TEST = TEST[0],
+TEST[v:T] =
+    (when (v < N) 
+        {n, ne, se, s, e, nw} -> TEST[v+1]
+    |sw -> TEST[3]
+    ).
+
+||TEST_S = (S || TEST).

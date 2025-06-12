@@ -1,0 +1,43 @@
+/*
+a.	Identify the actions of interest, and the processes involved in them.
+	i.	Actions of interest: goToCourt, playBasketball, leaveCourt
+	ii.	Processes: Gangs, BasketballCourt 
+
+b.	Provide a safety property that checks that the gangs are never both at the court.
+
+	After one gang leaves the other can go to the court.
+	property ONEALLOWED = (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED 
+    				   |jets.goToCourt-> jets.leaveCourt -> ONEALLOWED).
+
+*/
+
+
+/*
+d. Provide an FSP model that describes this system.
+	Check whether it satisfies the safety property.
+
+	No deadlocks/errors
+*/
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+BASKETBALLCOURT = BASKETBALLCOURT[0][0],
+BASKETBALLCOURT[sharks:Bool][jets:Bool] = 
+    (when (!jets) 
+        sharks.goToCourt -> BASKETBALLCOURT[1][0] 
+        |sharks.leaveCourt -> BASKETBALLCOURT[0][0]
+     |when (!sharks)
+        jets.goToCourt -> BASKETBALLCOURT[0][1] 
+        |jets.leaveCourt -> BASKETBALLCOURT[0][0]
+    ).
+
+GANG = (goToCourt -> playBasketball -> leaveCourt -> GANG).
+
+||GANGS = (sharks:GANG || jets:GANG).
+
+||BasketballCourt = (GANGS || BASKETBALLCOURT || ONEALLOWED).
+
+property ONEALLOWED = (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED 
+    				   |jets.goToCourt-> jets.leaveCourt -> ONEALLOWED).

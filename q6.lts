@@ -1,0 +1,87 @@
+/*
+a.	Identify the actions of interest, and the processes involved
+	in them.
+	i.	Actions of interest: goToCourt, tieRed,
+		checkOtherHandkerchief, leaveCourt, untieRed,
+		setTurnIndicator, checkTurnIndicator
+	ii.	Processes: Sharks, Jets, BasketballCourt
+*/
+
+/*
+c.	Provide an FSP model that describes the system
+	with Officer Krupke's court-sharing protocol.
+*/
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+const Sharks = 0
+const Jets = 1
+range Turn = Sharks..Jets
+
+BASKETBALLCOURT = BASKETBALLCOURT[0][0][0],
+BASKETBALLCOURT[sharksHandkerchief:Bool][jetsHandkerchief:Bool][turn:Turn] =(
+	when (!sharksHandkerchief)
+		sharks.tieRed -> sharks.setTurnIndicator -> sharks.checkTurnIndicator ->
+		sharks.checkOtherHandkerchief -> BASKETBALLCOURT[1][jetsHandkerchief][Jets]
+    |when (!jetsHandkerchief)
+    	jets.tieRed -> jets.setTurnIndicator -> jets.checkTurnIndicator ->
+		jets.checkOtherHandkerchief -> BASKETBALLCOURT[sharksHandkerchief][1][Sharks]
+	|when (turn == Jets && jetsHandkerchief)
+    	sharks.checkTurnIndicator ->
+		sharks.checkOtherHandkerchief ->  BASKETBALLCOURT[sharksHandkerchief][jetsHandkerchief][turn]
+	|when (turn == Sharks && sharksHandkerchief)
+    	jets.checkTurnIndicator ->
+		jets.checkOtherHandkerchief -> BASKETBALLCOURT[sharksHandkerchief][jetsHandkerchief][turn] 
+	|when ((turn != Jets || jetsHandkerchief == 0) && sharksHandkerchief)  
+    	sharks.goToCourt -> BASKETBALLCOURT[1][jetsHandkerchief][turn]
+    |when ((turn != Sharks || sharksHandkerchief == 0) && jetsHandkerchief)
+    	jets.goToCourt -> BASKETBALLCOURT[sharksHandkerchief][1][turn]
+	|sharks.untieRed -> BASKETBALLCOURT[0][jetsHandkerchief][turn]
+	|jets.untieRed -> BASKETBALLCOURT[sharksHandkerchief][0][turn]
+).
+
+SHARKS = (sharks.goToCourt -> sharks.leaveCourt -> 
+		sharks.untieRed -> SHARKS).
+
+
+JETS = (jets.goToCourt -> jets.leaveCourt -> 
+		jets.untieRed -> JETS).
+
+
+property ONEALLOWED =
+    (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED
+    |jets.goToCourt -> jets.leaveCourt -> ONEALLOWED).
+
+||GANGS = (SHARKS || JETS).
+||BasketballCourt = (GANGS || BASKETBALLCOURT || ONEALLOWED).
+
+
+progress SHARKS_GREED = {sharks.goToCourt}
+progress JETS_GREED = {jets.goToCourt}
+
+// When gangs are greedy
+||GREEDY_GANGS = BasketballCourt << {sharks.tieRed,jets.tieRed}.
+
+/*
+d.	Check whether your FSP model in (6.c)
+	satisfies the safety property you provided for (3.b).
+
+	property ONEALLOWED =
+    (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED
+    |jets.goToCourt -> jets.leaveCourt -> ONEALLOWED).
+
+	No deadlocks/errors
+
+e.	Check whether your FSP model in (6.c) satisfies the
+	progress properties you had provided for (5),
+	both when the gangs are greedy and when they are not greedy.
+	
+	progress SHARKS_GREED = {sharks.goToCourt}
+	progress JETS_GREED = {jets.goToCourt}
+
+	In both cases of when the gangs are greedy and when they are not greedy,
+	no progress violations detected.
+
+*/

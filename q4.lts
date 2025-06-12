@@ -1,0 +1,51 @@
+/*
+a.	Identify the actions of interest, and the processes involved in them (again, stick to the brief).
+	i.	Actions of interest: goToCourt, tieRed, checkOtherHandkerchief, leaveCourt, untieRed
+	ii.	Processes: Sharks, Jets, BasketballCourt
+*/
+
+
+/*
+c.	Provide an FSP model that describes the system with this court-sharing protocol – change the model of the gangs from the one you had in (3.d) above.
+	Check whether it satisfies the safety property you defined in (3.b).
+
+	It satisfies the safety property ONEALLOWED I defined in (3.b)
+	No deadlocks/errors
+*/
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+BASKETBALLCOURT = BASKETBALLCOURT[0][0],
+BASKETBALLCOURT [sharks:Bool][jets:Bool] =
+(
+	sharks.tieRed -> sharks.checkOtherHandkerchief -> BASKETBALLCOURT[1][jets]
+	|jets. tieRed -> jets.checkOtherHandkerchief -> BASKETBALLCOURT[sharks][1]
+	|when(!jets && sharks)
+		sharks. goToCourt -> BASKETBALLCOURT[1][jets]
+	|when (!sharks && jets)
+		jets. goToCourt -> BASKETBALLCOURT[sharks][1]
+	|when (jets)
+		sharks. untieRed -> BASKETBALLCOURT[0][jets]
+	|when (sharks)
+		jets.untieRed -> BASKETBALLCOURT[sharks][0]
+	|sharks.leaveCourt -> sharks.untieRed -> BASKETBALLCOURT[0][jets]
+	|jets.leaveCourt -> jets.untieRed -> BASKETBALLCOURT[sharks][0]
+).
+
+SHARKS = (sharks.tieRed -> sharks.checkOtherHandkerchief -> 
+           (sharks.goToCourt -> sharks.leaveCourt -> sharks.untieRed -> SHARKS
+           |sharks.untieRed -> SHARKS)).
+
+JETS = (jets.tieRed -> jets.checkOtherHandkerchief -> 
+           (jets.goToCourt -> jets.leaveCourt -> jets.untieRed -> JETS
+           |jets.untieRed -> JETS)).
+
+property ONEALLOWED =
+    (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED
+    |jets.goToCourt -> jets.leaveCourt -> ONEALLOWED).
+
+||GANGS = (SHARKS || JETS).
+
+||BasketballCourt = (GANGS || BASKETBALLCOURT || ONEALLOWED).

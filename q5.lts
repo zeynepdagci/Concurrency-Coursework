@@ -1,0 +1,41 @@
+const False = 0
+const True = 1
+range Bool = False..True
+
+BASKETBALLCOURT = BASKETBALLCOURT[0][0],
+BASKETBALLCOURT [sharksHandkerchief:Bool][jetsHandkerchief:Bool]=
+(
+	sharks.tieRed -> sharks.checkOtherHandkerchief -> BASKETBALLCOURT[1][jetsHandkerchief]
+	|jets.tieRed -> jets.checkOtherHandkerchief -> BASKETBALLCOURT[sharksHandkerchief][1]
+	|when(!jetsHandkerchief && sharksHandkerchief)
+		sharks.goToCourt -> BASKETBALLCOURT[1][jetsHandkerchief]
+	|when (!sharksHandkerchief && jetsHandkerchief)
+		jets.goToCourt -> BASKETBALLCOURT[sharksHandkerchief][1]
+	|when (jetsHandkerchief)
+		sharks.untieRed -> BASKETBALLCOURT[0][jetsHandkerchief]
+	|when (sharksHandkerchief)
+		jets.untieRed -> BASKETBALLCOURT[sharksHandkerchief][0]
+	|sharks.leaveCourt -> sharks.untieRed -> BASKETBALLCOURT[0][jetsHandkerchief]
+	|jets.leaveCourt -> jets.untieRed -> BASKETBALLCOURT[sharksHandkerchief][0]
+).
+
+SHARKS = (sharks.tieRed -> sharks.checkOtherHandkerchief -> 
+           (sharks.goToCourt -> sharks.leaveCourt -> sharks.untieRed -> SHARKS
+           |sharks.untieRed -> SHARKS)).
+
+JETS = (jets.tieRed -> jets.checkOtherHandkerchief -> 
+           (jets.goToCourt -> jets.leaveCourt -> jets.untieRed -> JETS
+           |jets.untieRed -> JETS)).
+
+property ONEALLOWED =
+    (sharks.goToCourt -> sharks.leaveCourt -> ONEALLOWED
+    |jets.goToCourt -> jets.leaveCourt -> ONEALLOWED).
+
+||GANGS = (SHARKS || JETS).
+||BasketballCourt = (GANGS || BASKETBALLCOURT || ONEALLOWED).
+
+progress SHARKS_GREED = {sharks.goToCourt}
+progress JETS_GREED = {jets.goToCourt}
+
+// When gangs are greedy
+||GREEDY_GANGS = BasketballCourt << {sharks.tieRed,jets.tieRed}.

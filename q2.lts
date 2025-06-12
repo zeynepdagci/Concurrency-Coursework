@@ -1,0 +1,9 @@
+/*
+
+a.	Given the provided FSP model, what is the overall probability of producing coffee in this machine?
+We don’t know and we don’t care, the model does not specify the probability.
+
+b.	Once the green button has been pressed, how much time does it take to produce tea?
+We don’t know and we don’t care, time is not specified. 
+
+*/
